@@ -196,6 +196,89 @@ td:last-child {
   color: rgba(88, 183, 205, 1);
 }
 /* =================================
+  Error Messages & Error Boundary
+==================================== */
+
+.error-message {
+  color: #d32f2f;
+  background-color: #ffebee;
+  padding: 0.5em 1em;
+  margin-top: 0.5em;
+  border-radius: 0.2em;
+  border-left: 4px solid #d32f2f;
+  font-size: 0.9em;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.error-boundary {
+  padding: 3em 2em;
+  text-align: center;
+  background: #fff;
+  margin: 2em;
+  border-radius: 0.35em;
+  box-shadow: 0 0 26px rgba(0, 0, 0, .13);
+}
+
+.error-boundary h1 {
+  color: #d32f2f;
+  text-shadow: none;
+  margin-bottom: 0.5em;
+}
+
+.error-boundary p {
+  color: #4c4c4c;
+  text-shadow: none;
+  margin-bottom: 1em;
+}
+
+.error-boundary button {
+  background: #58b7cd;
+  color: white;
+  padding: 0.75em 1.5em;
+  border: none;
+  border-radius: 0.3em;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background 0.3s ease;
+}
+
+.error-boundary button:hover {
+  background: #4a9fb3;
+}
+
+.error-boundary details {
+  margin-top: 2em;
+  text-align: left;
+  background: #f5f5f5;
+  padding: 1em;
+  border-radius: 0.2em;
+}
+
+.error-boundary details summary {
+  cursor: pointer;
+  font-weight: bold;
+  color: #d32f2f;
+}
+
+.error-boundary details pre {
+  margin-top: 0.5em;
+  overflow-x: auto;
+  font-size: 0.85em;
+  color: #333;
+}
+
+/* =================================
   Media Queries
 ==================================== */
 

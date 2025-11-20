@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import Header from './components/Header';
+import Statistics from './components/Statistics';
 import GuestList from './components/GuestList';
 
 const STORAGE_KEY = 'volutrack_guests';
@@ -128,35 +130,14 @@ const App = () => {
 
   return (
     <div className="App">
-      <header>
-        <h1>Volutrack</h1>
-        <p>Rosamond Elementary</p>
-        <form onSubmit={handleSubmit} noValidate>
-          <input
-            type="text"
-            value={value}
-            onChange={handleInputChange}
-            placeholder="Invite Someone"
-            aria-label="Guest name"
-            aria-invalid={error ? 'true' : 'false'}
-            aria-describedby={error ? 'guest-name-error' : undefined}
-            required
-            minLength={2}
-            maxLength={50}
-          />
-          <button type="submit" name="submit" value="submit">Submit</button>
-        </form>
-        {error && (
-          <div
-            id="guest-name-error"
-            role="alert"
-            aria-live="polite"
-            style={{ color: 'red', marginTop: '0.5em', fontSize: '0.9em' }}
-          >
-            {error}
-          </div>
-        )}
-      </header>
+      <Header
+        title="Volutrack"
+        subtitle="Rosamond Elementary"
+        formValue={value}
+        onFormSubmit={handleSubmit}
+        onFormChange={handleInputChange}
+        formError={error}
+      />
       <div className="main">
         <div>
           <h2>Volunteers/Visitors</h2>
@@ -169,22 +150,11 @@ const App = () => {
             /> Hide those who haven't responded
           </label>
         </div>
-        <table className="counter">
-          <tbody>
-            <tr>
-              <td>Attending:</td>
-              <td>{getAttendingGuests()}</td>
-            </tr>
-            <tr>
-              <td>Unconfirmed:</td>
-              <td>{getUnconfirmedGuests()}</td>
-            </tr>
-            <tr>
-              <td>Total:</td>
-              <td>{getTotalInvited()}</td>
-            </tr>
-          </tbody>
-        </table>
+        <Statistics
+          attending={getAttendingGuests()}
+          unconfirmed={getUnconfirmedGuests()}
+          total={getTotalInvited()}
+        />
         <GuestList
           guests={guests}
           hideUnconfirmed={hideUnconfirmed}
