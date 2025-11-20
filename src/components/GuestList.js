@@ -13,18 +13,38 @@ const GuestList = ({
 }) => {
   const filteredGuests = guests.filter(guest => !hideUnconfirmed || guest.isConfirmed);
 
+  if (filteredGuests.length === 0) {
+    return (
+      <p role="status" aria-live="polite">
+        No guests to display. Add a guest using the form above.
+      </p>
+    );
+  }
+
   return (
-    <ul>
+    <ul aria-label="Guest list">
       {filteredGuests.map((guest, index) => {
         const actualIndex = guests.indexOf(guest);
+        const guestStatus = guest.isConfirmed ? "confirmed" : "pending";
+
         return (
-          <li key={actualIndex} className={guest.isConfirmed ? "responded" : "pending"}>
+          <li
+            key={actualIndex}
+            className={guest.isConfirmed ? "responded" : "pending"}
+            aria-label={`${guest.name}, status: ${guestStatus}`}
+          >
             {editingIndex === actualIndex ? (
               <input
                 type="text"
                 value={guest.name}
                 onChange={(e) => onNameChange(actualIndex, e.target.value)}
                 onBlur={onStopEditing}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === 'Escape') {
+                    onStopEditing();
+                  }
+                }}
+                aria-label={`Edit name for ${guest.name}`}
                 autoFocus
               />
             ) : (
@@ -35,10 +55,21 @@ const GuestList = ({
                 type="checkbox"
                 checked={guest.isConfirmed}
                 onChange={() => onToggleConfirmation(actualIndex)}
+                aria-label={`Mark ${guest.name} as ${guest.isConfirmed ? 'unconfirmed' : 'confirmed'}`}
               /> Confirmed
             </label>
-            <button onClick={() => onStartEditing(actualIndex)}>edit</button>
-            <button onClick={() => onRemoveGuest(actualIndex)}>remove</button>
+            <button
+              onClick={() => onStartEditing(actualIndex)}
+              aria-label={`Edit ${guest.name}`}
+            >
+              edit
+            </button>
+            <button
+              onClick={() => onRemoveGuest(actualIndex)}
+              aria-label={`Remove ${guest.name}`}
+            >
+              remove
+            </button>
           </li>
         );
       })}
