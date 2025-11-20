@@ -1,9 +1,9 @@
 import React from 'react';
 
-const VistorList = (props) => (
+const VisitorList = (props) => (
     <ul>
-        {props.visitors.map(visitor => (
-            <li className="in"><span>{visitor.name}</span>
+        {props.visitors.map((visitor, index) => (
+            <li key={index} className="in"><span>{visitor.name}</span>
                 <label>Time In: {visitor.timeIn}</label>
                 <label>Classroom: {visitor.classroom}</label>
                 <label>Visit Type: {visitor.visitType}</label>
@@ -13,4 +13,4 @@ const VistorList = (props) => (
     </ul>
 );
 
-export default VistorList;
+export default VisitorList;
