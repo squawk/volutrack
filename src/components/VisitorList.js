@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const VisitorList = (props) => (
     <ul>
@@ -12,5 +13,14 @@ const VisitorList = (props) => (
         ))}
     </ul>
 );
+
+VisitorList.propTypes = {
+    visitors: PropTypes.arrayOf(PropTypes.shape({
+        name: PropTypes.string.isRequired,
+        timeIn: PropTypes.string.isRequired,
+        classroom: PropTypes.string.isRequired,
+        visitType: PropTypes.string.isRequired
+    })).isRequired
+};
 
 export default VisitorList;

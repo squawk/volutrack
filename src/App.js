@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import GuestList from './components/GuestList';
 
 class App extends Component {
 
@@ -14,16 +15,33 @@ class App extends Component {
       }
     ],
     value: '',
-    hideUnconfirmed: false
+    hideUnconfirmed: false,
+    editingIndex: null
   };
 
   getTotalInvited = () => this.state.guests.length;
-  // getAttendingGuests = () =>
-  // getUnconfirmedGuests = () =>
+
+  getAttendingGuests = () =>
+    this.state.guests.filter(guest => guest.isConfirmed).length;
+
+  getUnconfirmedGuests = () =>
+    this.state.guests.filter(guest => !guest.isConfirmed).length;
 
   handleSubmit = (e) => {
     e.preventDefault();
-    // Form submission logic will be implemented later
+    const name = this.state.value.trim();
+    if (name) {
+      this.setState({
+        guests: [
+          ...this.state.guests,
+          {
+            name: name,
+            isConfirmed: false
+          }
+        ],
+        value: ''
+      });
+    }
   };
 
   handleInputChange = (e) => {
@@ -32,6 +50,46 @@ class App extends Component {
 
   toggleHideUnconfirmed = () => {
     this.setState({ hideUnconfirmed: !this.state.hideUnconfirmed });
+  };
+
+  toggleConfirmation = (index) => {
+    this.setState({
+      guests: this.state.guests.map((guest, i) => {
+        if (i === index) {
+          return { ...guest, isConfirmed: !guest.isConfirmed };
+        }
+        return guest;
+      })
+    });
+  };
+
+  removeGuest = (index) => {
+    this.setState({
+      guests: this.state.guests.filter((guest, i) => i !== index)
+    });
+  };
+
+  updateGuestName = (index, newName) => {
+    this.setState({
+      guests: this.state.guests.map((guest, i) => {
+        if (i === index) {
+          return { ...guest, name: newName };
+        }
+        return guest;
+      })
+    });
+  };
+
+  startEditing = (index) => {
+    this.setState({ editingIndex: index });
+  };
+
+  stopEditing = () => {
+    this.setState({ editingIndex: null });
+  };
+
+  handleNameChange = (index, newName) => {
+    this.updateGuestName(index, newName);
   };
 
   render() {
@@ -56,43 +114,28 @@ class App extends Component {
             <tbody>
               <tr>
                 <td>Attending:</td>
-                <td>2</td>
+                <td>{this.getAttendingGuests()}</td>
               </tr>
               <tr>
                 <td>Unconfirmed:</td>
-                <td>1</td>
+                <td>{this.getUnconfirmedGuests()}</td>
               </tr>
               <tr>
                 <td>Total:</td>
-                <td>3</td>
+                <td>{this.getTotalInvited()}</td>
               </tr>
             </tbody>
           </table>
-          <ul>
-            <li className="pending"><span>Safia</span></li>
-            <li className="responded"><span>Iver</span>
-              <label>
-                <input type="checkbox" checked onChange={() => {}} /> Confirmed
-              </label>
-              <button>edit</button>
-              <button>remove</button>
-            </li>
-            <li className="responded"><span>Corrina</span>
-              <label>
-                <input type="checkbox" checked onChange={() => {}} /> Confirmed
-              </label>
-              <button>edit</button>
-              <button>remove</button>
-            </li>
-            <li>
-              <span>Joel</span>
-              <label>
-                <input type="checkbox" onChange={() => {}} /> Confirmed
-              </label>
-              <button>edit</button>
-              <button>remove</button>
-            </li>
-          </ul>
+          <GuestList
+            guests={this.state.guests}
+            hideUnconfirmed={this.state.hideUnconfirmed}
+            editingIndex={this.state.editingIndex}
+            onToggleConfirmation={this.toggleConfirmation}
+            onStartEditing={this.startEditing}
+            onStopEditing={this.stopEditing}
+            onNameChange={this.handleNameChange}
+            onRemoveGuest={this.removeGuest}
+          />
         </div>
       </div>
     );
