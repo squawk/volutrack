@@ -1,6 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+/**
+ * GuestList component displays a list of guests with edit, remove, and confirmation controls
+ * @param {Object} props - Component props
+ * @param {Array} props.guests - Array of guest objects with name and isConfirmed properties
+ * @param {boolean} props.hideUnconfirmed - Whether to hide unconfirmed guests
+ * @param {number|null} props.editingIndex - Index of guest currently being edited, or null
+ * @param {Function} props.onToggleConfirmation - Handler for toggling guest confirmation status
+ * @param {Function} props.onStartEditing - Handler for starting edit mode for a guest
+ * @param {Function} props.onStopEditing - Handler for stopping edit mode
+ * @param {Function} props.onNameChange - Handler for changing guest name during edit
+ * @param {Function} props.onRemoveGuest - Handler for removing a guest
+ */
 const GuestList = ({
   guests,
   hideUnconfirmed,
