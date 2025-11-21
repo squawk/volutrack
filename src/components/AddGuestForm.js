@@ -9,11 +9,13 @@ import PropTypes from 'prop-types';
  * @param {Function} props.onSubmit - Form submit handler
  * @param {Function} props.onChange - Input change handler
  * @param {string} props.error - Validation error message
+ * @param {React.RefObject} props.inputRef - Ref for the input element
  */
-const AddGuestForm = React.memo(({ value, onSubmit, onChange, error = '' }) => {
+const AddGuestForm = React.memo(({ value, onSubmit, onChange, error = '', inputRef }) => {
   return (
     <form onSubmit={onSubmit} noValidate>
       <input
+        ref={inputRef}
         type="text"
         value={value}
         onChange={onChange}
@@ -46,7 +48,8 @@ AddGuestForm.propTypes = {
   value: PropTypes.string.isRequired,
   onSubmit: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
-  error: PropTypes.string
+  error: PropTypes.string,
+  inputRef: PropTypes.object
 };
 
 export default AddGuestForm;

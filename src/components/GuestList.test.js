@@ -27,6 +27,7 @@ describe('GuestList Component', () => {
     render(
       <GuestList
         guests={mockGuests}
+        allGuests={mockGuests}
         hideUnconfirmed={false}
         editingIndex={null}
         {...mockHandlers}
@@ -39,9 +40,11 @@ describe('GuestList Component', () => {
   });
 
   test('filters unconfirmed guests when hideUnconfirmed is true', () => {
+    const confirmedGuests = mockGuests.filter(g => g.isConfirmed);
     render(
       <GuestList
-        guests={mockGuests}
+        guests={confirmedGuests}
+        allGuests={mockGuests}
         hideUnconfirmed={true}
         editingIndex={null}
         {...mockHandlers}
@@ -54,9 +57,11 @@ describe('GuestList Component', () => {
   });
 
   test('shows empty state when no guests match filter', () => {
+    const singleGuest = [{ name: 'Bob', isConfirmed: false }];
     render(
       <GuestList
-        guests={[{ name: 'Bob', isConfirmed: false }]}
+        guests={[]}
+        allGuests={singleGuest}
         hideUnconfirmed={true}
         editingIndex={null}
         {...mockHandlers}
@@ -71,6 +76,7 @@ describe('GuestList Component', () => {
     render(
       <GuestList
         guests={mockGuests}
+        allGuests={mockGuests}
         hideUnconfirmed={false}
         editingIndex={null}
         {...mockHandlers}
@@ -88,6 +94,7 @@ describe('GuestList Component', () => {
     render(
       <GuestList
         guests={mockGuests}
+        allGuests={mockGuests}
         hideUnconfirmed={false}
         editingIndex={null}
         {...mockHandlers}
@@ -105,6 +112,7 @@ describe('GuestList Component', () => {
     render(
       <GuestList
         guests={mockGuests}
+        allGuests={mockGuests}
         hideUnconfirmed={false}
         editingIndex={null}
         {...mockHandlers}
@@ -121,6 +129,7 @@ describe('GuestList Component', () => {
     render(
       <GuestList
         guests={mockGuests}
+        allGuests={mockGuests}
         hideUnconfirmed={false}
         editingIndex={0}
         {...mockHandlers}
@@ -136,6 +145,7 @@ describe('GuestList Component', () => {
     render(
       <GuestList
         guests={mockGuests}
+        allGuests={mockGuests}
         hideUnconfirmed={false}
         editingIndex={0}
         {...mockHandlers}
@@ -153,6 +163,7 @@ describe('GuestList Component', () => {
     render(
       <GuestList
         guests={mockGuests}
+        allGuests={mockGuests}
         hideUnconfirmed={false}
         editingIndex={0}
         {...mockHandlers}
@@ -169,6 +180,7 @@ describe('GuestList Component', () => {
     const { container } = render(
       <GuestList
         guests={mockGuests}
+        allGuests={mockGuests}
         hideUnconfirmed={false}
         editingIndex={null}
         {...mockHandlers}
@@ -183,6 +195,7 @@ describe('GuestList Component', () => {
     const { container } = render(
       <GuestList
         guests={mockGuests}
+        allGuests={mockGuests}
         hideUnconfirmed={false}
         editingIndex={null}
         {...mockHandlers}
