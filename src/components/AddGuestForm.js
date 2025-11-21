@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 
 /**
  * AddGuestForm component for adding new guests
+ * Memoized to optimize re-renders
  * @param {Object} props - Component props
  * @param {string} props.value - Current input value
  * @param {Function} props.onSubmit - Form submit handler
  * @param {Function} props.onChange - Input change handler
  * @param {string} props.error - Validation error message
  */
-const AddGuestForm = ({ value, onSubmit, onChange, error = '' }) => {
+const AddGuestForm = React.memo(({ value, onSubmit, onChange, error = '' }) => {
   return (
     <form onSubmit={onSubmit} noValidate>
       <input
@@ -37,7 +38,9 @@ const AddGuestForm = ({ value, onSubmit, onChange, error = '' }) => {
       )}
     </form>
   );
-};
+});
+
+AddGuestForm.displayName = 'AddGuestForm';
 
 AddGuestForm.propTypes = {
   value: PropTypes.string.isRequired,
