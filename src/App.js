@@ -1,64 +1,57 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import Header from './components/Header';
 import Statistics from './components/Statistics';
 import GuestList from './components/GuestList';
+import useLocalStorage from './hooks/useLocalStorage';
+import useGuestManagement from './hooks/useGuestManagement';
+import { STORAGE_KEYS, APP_CONSTANTS, GUEST_NAME_VALIDATION, VALIDATION_ERRORS } from './constants/validation';
 
-const STORAGE_KEY = 'volutrack_guests';
+const INITIAL_GUESTS = [
+  {
+    name: 'Treasure',
+    isConfirmed: false
+  },
+  {
+    name: 'Nic',
+    isConfirmed: true
+  }
+];
 
 const App = () => {
-  const [guests, setGuests] = useState(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved) : [
-      {
-        name: 'Treasure',
-        isConfirmed: false
-      },
-      {
-        name: 'Nic',
-        isConfirmed: true
-      }
-    ];
-  });
+  const [guests, setGuests] = useLocalStorage(STORAGE_KEYS.GUESTS, INITIAL_GUESTS);
   const [value, setValue] = useState('');
   const [hideUnconfirmed, setHideUnconfirmed] = useState(false);
   const [editingIndex, setEditingIndex] = useState(null);
   const [error, setError] = useState('');
 
-  // Persist guests to localStorage whenever they change
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(guests));
-  }, [guests]);
-
-  const getTotalInvited = useCallback(() => guests.length, [guests]);
-
-  const getAttendingGuests = useCallback(() =>
-    guests.filter(guest => guest.isConfirmed).length,
-    [guests]
-  );
-
-  const getUnconfirmedGuests = useCallback(() =>
-    guests.filter(guest => !guest.isConfirmed).length,
-    [guests]
-  );
+  const {
+    totalInvited,
+    attendingGuests,
+    unconfirmedGuests,
+    addGuest,
+    removeGuest,
+    toggleConfirmation,
+    updateGuestName
+  } = useGuestManagement(guests, setGuests);
 
   const validateGuestName = useCallback((name) => {
     if (!name || name.trim().length === 0) {
-      return 'Guest name cannot be empty';
+      return VALIDATION_ERRORS.EMPTY;
     }
-    if (name.trim().length < 2) {
-      return 'Guest name must be at least 2 characters';
+    if (name.trim().length < GUEST_NAME_VALIDATION.MIN_LENGTH) {
+      return VALIDATION_ERRORS.TOO_SHORT;
     }
-    if (name.trim().length > 50) {
-      return 'Guest name must be less than 50 characters';
+    if (name.trim().length > GUEST_NAME_VALIDATION.MAX_LENGTH) {
+      return VALIDATION_ERRORS.TOO_LONG;
     }
-    if (!/^[a-zA-Z\s'-]+$/.test(name.trim())) {
-      return 'Guest name can only contain letters, spaces, hyphens, and apostrophes';
+    if (!GUEST_NAME_VALIDATION.PATTERN.test(name.trim())) {
+      return VALIDATION_ERRORS.INVALID_CHARACTERS;
     }
     const isDuplicate = guests.some(
       guest => guest.name.toLowerCase() === name.trim().toLowerCase()
     );
     if (isDuplicate) {
-      return 'This guest name already exists';
+      return VALIDATION_ERRORS.DUPLICATE;
     }
     return '';
   }, [guests]);
@@ -73,16 +66,10 @@ const App = () => {
       return;
     }
 
-    setGuests(prevGuests => [
-      ...prevGuests,
-      {
-        name: name,
-        isConfirmed: false
-      }
-    ]);
+    addGuest(name);
     setValue('');
     setError('');
-  }, [value, validateGuestName]);
+  }, [value, validateGuestName, addGuest]);
 
   const handleInputChange = useCallback((e) => {
     setValue(e.target.value);
@@ -94,26 +81,6 @@ const App = () => {
 
   const toggleHideUnconfirmed = useCallback(() => {
     setHideUnconfirmed(prev => !prev);
-  }, []);
-
-  const toggleConfirmation = useCallback((index) => {
-    setGuests(prevGuests =>
-      prevGuests.map((guest, i) =>
-        i === index ? { ...guest, isConfirmed: !guest.isConfirmed } : guest
-      )
-    );
-  }, []);
-
-  const removeGuest = useCallback((index) => {
-    setGuests(prevGuests => prevGuests.filter((guest, i) => i !== index));
-  }, []);
-
-  const updateGuestName = useCallback((index, newName) => {
-    setGuests(prevGuests =>
-      prevGuests.map((guest, i) =>
-        i === index ? { ...guest, name: newName } : guest
-      )
-    );
   }, []);
 
   const startEditing = useCallback((index) => {
@@ -131,8 +98,8 @@ const App = () => {
   return (
     <div className="App">
       <Header
-        title="Volutrack"
-        subtitle="Rosamond Elementary"
+        title={APP_CONSTANTS.TITLE}
+        subtitle={APP_CONSTANTS.SUBTITLE}
         formValue={value}
         onFormSubmit={handleSubmit}
         onFormChange={handleInputChange}
@@ -151,9 +118,9 @@ const App = () => {
           </label>
         </div>
         <Statistics
-          attending={getAttendingGuests()}
-          unconfirmed={getUnconfirmedGuests()}
-          total={getTotalInvited()}
+          attending={attendingGuests}
+          unconfirmed={unconfirmedGuests}
+          total={totalInvited}
         />
         <GuestList
           guests={guests}
