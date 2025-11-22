@@ -1,12 +1,15 @@
 import React, { useState, useCallback, useMemo, useRef } from 'react';
 import { Toaster, toast } from 'react-hot-toast';
-import { FiMoon, FiSun } from 'react-icons/fi';
+import { FiMoon, FiSun, FiBarChart2 } from 'react-icons/fi';
 import Header from './components/Header';
 import Statistics from './components/Statistics';
 import GuestList from './components/GuestList';
 import SearchSort from './components/SearchSort';
 import ConfirmModal from './components/ConfirmModal';
 import KeyboardShortcutsHelp from './components/KeyboardShortcutsHelp';
+import GuestDetailModal from './components/GuestDetailModal';
+import StatisticsChart from './components/StatisticsChart';
+import EmptyState from './components/EmptyState';
 import useLocalStorage from './hooks/useLocalStorage';
 import useGuestManagement from './hooks/useGuestManagement';
 import useDarkMode from './hooks/useDarkMode';
@@ -38,6 +41,8 @@ const App = () => {
   const [sortBy, setSortBy] = useState('recent');
   const [confirmModal, setConfirmModal] = useState({ isOpen: false, guestIndex: null, guestName: '' });
   const [undoHistory, setUndoHistory] = useState([]);
+  const [guestDetailModal, setGuestDetailModal] = useState({ isOpen: false, guest: null, guestIndex: null });
+  const [showStats, setShowStats] = useState(false);
 
   // Hooks
   const [isDarkMode, toggleDarkMode] = useDarkMode();
@@ -230,6 +235,26 @@ const App = () => {
     );
   }, [guests, toggleConfirmation]);
 
+  // Guest detail modal handlers
+  const openGuestDetail = useCallback((index) => {
+    const guest = guests[index];
+    setGuestDetailModal({ isOpen: true, guest, guestIndex: index });
+  }, [guests]);
+
+  const closeGuestDetail = useCallback(() => {
+    setGuestDetailModal({ isOpen: false, guest: null, guestIndex: null });
+  }, []);
+
+  const handleSaveGuestDetails = useCallback((index, updatedGuest) => {
+    setGuests(prev => {
+      const newGuests = [...prev];
+      newGuests[index] = updatedGuest;
+      return newGuests;
+    });
+    setGuestDetailModal(prev => ({ ...prev, guest: updatedGuest }));
+    toast.success('Guest details saved');
+  }, [setGuests]);
+
   // Export handlers
   const handleExportCSV = useCallback(() => {
     exportToCSV(guests);
@@ -342,6 +367,31 @@ const App = () => {
         ?
       </button>
 
+      <button
+        onClick={() => setShowStats(prev => !prev)}
+        style={{
+          position: 'fixed',
+          bottom: '80px',
+          right: '20px',
+          background: showStats ? 'var(--accent-color)' : 'var(--bg-secondary)',
+          border: showStats ? 'none' : '2px solid var(--border-color)',
+          borderRadius: '50%',
+          width: '50px',
+          height: '50px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+          zIndex: 1000,
+          transition: 'all 0.3s ease',
+        }}
+        aria-label={showStats ? 'Hide statistics' : 'Show statistics'}
+        title={showStats ? 'Hide statistics' : 'Show statistics'}
+      >
+        <FiBarChart2 size={24} color={showStats ? 'white' : 'var(--text-primary)'} />
+      </button>
+
       <div className="main">
         <div>
           <h2>Volunteers/Visitors</h2>
@@ -361,6 +411,14 @@ const App = () => {
           total={totalInvited}
         />
 
+        {showStats && (
+          <StatisticsChart
+            attending={attendingGuests}
+            unconfirmed={unconfirmedGuests}
+            total={totalInvited}
+          />
+        )}
+
         <SearchSort
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
@@ -369,17 +427,34 @@ const App = () => {
           searchInputRef={searchInputRef}
         />
 
-        <GuestList
-          guests={filteredAndSortedGuests}
-          allGuests={guests}
-          hideUnconfirmed={hideUnconfirmed}
-          editingIndex={editingIndex}
-          onToggleConfirmation={handleToggleConfirmation}
-          onStartEditing={startEditing}
-          onStopEditing={stopEditing}
-          onNameChange={handleNameChange}
-          onRemoveGuest={handleRemoveRequest}
-        />
+        {guests.length === 0 ? (
+          <EmptyState
+            type="no-guests"
+            onFocusInput={() => guestNameInputRef.current?.focus()}
+          />
+        ) : filteredAndSortedGuests.length === 0 ? (
+          <EmptyState
+            type={searchQuery ? 'no-results' : 'filtered'}
+            searchQuery={searchQuery}
+            onClearSearch={() => {
+              setSearchQuery('');
+              setHideUnconfirmed(false);
+            }}
+          />
+        ) : (
+          <GuestList
+            guests={filteredAndSortedGuests}
+            allGuests={guests}
+            hideUnconfirmed={hideUnconfirmed}
+            editingIndex={editingIndex}
+            onToggleConfirmation={handleToggleConfirmation}
+            onStartEditing={startEditing}
+            onStopEditing={stopEditing}
+            onNameChange={handleNameChange}
+            onRemoveGuest={handleRemoveRequest}
+            onGuestClick={openGuestDetail}
+          />
+        )}
       </div>
 
       <ConfirmModal
@@ -395,6 +470,15 @@ const App = () => {
       <KeyboardShortcutsHelp
         isOpen={showKeyboardHelp}
         onClose={toggleKeyboardHelp}
+      />
+
+      <GuestDetailModal
+        isOpen={guestDetailModal.isOpen}
+        guest={guestDetailModal.guest}
+        guestIndex={guestDetailModal.guestIndex}
+        onClose={closeGuestDetail}
+        onSave={handleSaveGuestDetails}
+        onToggleConfirmation={handleToggleConfirmation}
       />
     </div>
   );

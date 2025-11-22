@@ -1,0 +1,231 @@
+.swipeable-container {
+  position: relative;
+  margin-bottom: 12px;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+/* Swipe Actions */
+.swipe-action {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 0;
+}
+
+.swipe-action.left {
+  left: 0;
+  background: linear-gradient(90deg, #4caf50, #81c784);
+}
+
+.swipe-action.right {
+  right: 0;
+  background: linear-gradient(90deg, #ff6b6b, #f44336);
+}
+
+.action-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: white;
+  font-weight: 500;
+  font-size: 0.75rem;
+}
+
+.action-content.unconfirm {
+  color: white;
+}
+
+.action-content.delete {
+  color: white;
+}
+
+/* Main Guest Item */
+.swipeable-guest-item {
+  position: relative;
+  z-index: 1;
+  background: var(--bg-secondary, #fff);
+  padding: 16px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  border: 1px solid var(--border-color, rgba(88, 183, 205, 0.15));
+  transition: box-shadow 0.2s ease;
+  touch-action: pan-y;
+}
+
+.swipeable-guest-item:not(.dragging):hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.swipeable-guest-item.dragging {
+  cursor: grabbing;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.swipeable-guest-item.confirmed {
+  border-color: rgba(88, 183, 205, 0.5);
+}
+
+.swipeable-guest-item.pending {
+  border-color: rgba(210, 210, 210, 0.5);
+}
+
+.guest-item-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.guest-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.guest-name {
+  font-size: 1.1rem;
+  color: var(--text-primary, #4c4c4c);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.swipeable-guest-item.pending .guest-name {
+  color: var(--text-secondary, #999);
+}
+
+.guest-name-input {
+  font-size: 1.1rem;
+  border: none;
+  border-bottom: 2px solid var(--accent-color, #58b7cd);
+  background: transparent;
+  padding: 2px 0;
+  color: var(--text-primary, #4c4c4c);
+  width: 100%;
+  outline: none;
+}
+
+.guest-status-badge {
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 12px;
+  width: fit-content;
+}
+
+.guest-status-badge.confirmed {
+  background: rgba(76, 175, 80, 0.15);
+  color: #4caf50;
+}
+
+.guest-status-badge.pending {
+  background: rgba(255, 152, 0, 0.15);
+  color: #ff9800;
+}
+
+/* Desktop Actions */
+.desktop-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.action-btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.confirm-btn {
+  background: rgba(76, 175, 80, 0.15);
+  color: #4caf50;
+}
+
+.confirm-btn:hover {
+  background: rgba(76, 175, 80, 0.25);
+}
+
+.edit-btn {
+  background: var(--accent-color, #58b7cd);
+  color: white;
+}
+
+.edit-btn:hover {
+  background: var(--accent-hover, #4a9fb3);
+}
+
+.delete-btn {
+  background: rgba(244, 67, 54, 0.15);
+  color: #f44336;
+}
+
+.delete-btn:hover {
+  background: rgba(244, 67, 54, 0.25);
+}
+
+/* Swipe Hint */
+.swipe-hint {
+  display: none;
+  position: absolute;
+  right: 12px;
+  color: var(--text-secondary, #999);
+  font-size: 0.7rem;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .desktop-actions {
+    display: none;
+  }
+
+  .swipe-hint {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .hint-text {
+    animation: swipeHint 2s ease-in-out infinite;
+  }
+
+  @keyframes swipeHint {
+    0%, 100% {
+      opacity: 0.5;
+      transform: translateX(0);
+    }
+    50% {
+      opacity: 1;
+      transform: translateX(-5px);
+    }
+  }
+
+  .swipeable-guest-item {
+    padding: 12px;
+  }
+
+  .guest-name {
+    font-size: 1rem;
+  }
+}
+
+/* Touch feedback */
+@media (hover: none) {
+  .swipeable-guest-item:active {
+    background: var(--hover-bg, rgba(0, 0, 0, 0.02));
+  }
+}

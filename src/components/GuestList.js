@@ -15,6 +15,7 @@ import Avatar from './Avatar';
  * @param {Function} props.onStopEditing - Handler for stopping edit mode
  * @param {Function} props.onNameChange - Handler for changing guest name during edit
  * @param {Function} props.onRemoveGuest - Handler for removing a guest
+ * @param {Function} props.onGuestClick - Handler for clicking on a guest to view details
  */
 const GuestList = ({
   guests,
@@ -25,7 +26,8 @@ const GuestList = ({
   onStartEditing,
   onStopEditing,
   onNameChange,
-  onRemoveGuest
+  onRemoveGuest,
+  onGuestClick
 }) => {
 
   if (guests.length === 0) {
@@ -54,7 +56,18 @@ const GuestList = ({
               transition={{ duration: 0.3 }}
               layout
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div
+                style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}
+                onClick={() => onGuestClick && onGuestClick(actualIndex)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && onGuestClick) {
+                    onGuestClick(actualIndex);
+                  }
+                }}
+                aria-label={`View details for ${guest.name}`}
+              >
                 <Avatar name={guest.name} size={40} />
                 {editingIndex === actualIndex ? (
                   <input
@@ -117,7 +130,8 @@ GuestList.propTypes = {
   onStartEditing: PropTypes.func.isRequired,
   onStopEditing: PropTypes.func.isRequired,
   onNameChange: PropTypes.func.isRequired,
-  onRemoveGuest: PropTypes.func.isRequired
+  onRemoveGuest: PropTypes.func.isRequired,
+  onGuestClick: PropTypes.func
 };
 
 export default GuestList;
