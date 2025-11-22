@@ -1,0 +1,207 @@
+.statistics-chart-container {
+  background: var(--bg-secondary, #fcfcfc);
+  border-radius: 12px;
+  padding: 24px;
+  margin: 20px 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.statistics-chart-title {
+  margin: 0 0 20px 0;
+  color: var(--text-primary, #4c4c4c);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+/* Stats Cards */
+.stats-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 10px;
+  transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+}
+
+.stat-icon {
+  font-size: 24px;
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #767676);
+}
+
+/* Chart Sections */
+.chart-section {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-color, rgba(0, 0, 0, 0.1));
+}
+
+.chart-section h4 {
+  margin: 0 0 16px 0;
+  color: var(--text-secondary, #767676);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+/* Progress Bar Chart */
+.progress-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.progress-bar-container {
+  display: flex;
+  height: 24px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--border-color, #e0e0e0);
+}
+
+.progress-bar {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
+  min-width: 0;
+}
+
+.progress-bar.confirmed {
+  background: linear-gradient(135deg, #4caf50, #81c784);
+}
+
+.progress-bar.pending {
+  background: linear-gradient(135deg, #ff9800, #ffb74d);
+}
+
+.progress-legend {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--text-secondary, #767676);
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+.legend-color.confirmed {
+  background: #4caf50;
+}
+
+.legend-color.pending {
+  background: #ff9800;
+}
+
+/* Donut Chart */
+.donut-chart-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+.donut-chart {
+  width: 160px;
+  height: 160px;
+  transform: rotate(-90deg);
+}
+
+.donut-center-value {
+  font-size: 16px;
+  font-weight: 700;
+  fill: var(--text-primary, #4c4c4c);
+  transform: rotate(90deg);
+  transform-origin: 50% 50%;
+}
+
+.donut-center-label {
+  font-size: 8px;
+  fill: var(--text-secondary, #767676);
+  transform: rotate(90deg);
+  transform-origin: 50% 50%;
+}
+
+/* Empty State */
+.chart-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: var(--text-secondary, #999);
+  text-align: center;
+}
+
+.chart-empty-state svg {
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+
+.chart-empty-state p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* Mobile Responsive */
+@media (max-width: 480px) {
+  .statistics-chart-container {
+    padding: 16px;
+  }
+
+  .stats-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stat-card {
+    padding: 12px;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .stat-value {
+    font-size: 1.25rem;
+  }
+
+  .progress-legend {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+}
