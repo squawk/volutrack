@@ -11,6 +11,7 @@ import AddGuestForm from './AddGuestForm';
  * @param {Function} props.onFormSubmit - Form submit handler
  * @param {Function} props.onFormChange - Form input change handler
  * @param {string} props.formError - Form validation error
+ * @param {React.RefObject} props.inputRef - Ref for the input element
  */
 const Header = ({
   title,
@@ -18,7 +19,8 @@ const Header = ({
   formValue,
   onFormSubmit,
   onFormChange,
-  formError = ''
+  formError = '',
+  inputRef
 }) => {
   return (
     <header>
@@ -29,6 +31,7 @@ const Header = ({
         onSubmit={onFormSubmit}
         onChange={onFormChange}
         error={formError}
+        inputRef={inputRef}
       />
     </header>
   );
@@ -40,7 +43,8 @@ Header.propTypes = {
   formValue: PropTypes.string.isRequired,
   onFormSubmit: PropTypes.func.isRequired,
   onFormChange: PropTypes.func.isRequired,
-  formError: PropTypes.string
+  formError: PropTypes.string,
+  inputRef: PropTypes.object
 };
 
 export default Header;
